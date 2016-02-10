@@ -89,7 +89,7 @@ public class MedicalComponentManager {
             }
 
             Class[] parameterTypes = {String.class};
-            Method methodScan = port.getClass().getMethod("scan",parameterTypes);
+            Method methodScan = port.getClass().getMethod("launchVehicle",parameterTypes);
 
             if (Configuration.instance.isDebug) {
                 //System.out.println(medicalEvent.getLocation().getClass());
@@ -100,6 +100,35 @@ public class MedicalComponentManager {
             String launchVehicleMessage = (String) methodScan.invoke(port,parameterValues);
 
             System.out.println(launchVehicleMessage);
+
+        } catch (Exception e) {
+            System.out.println("! exception : " + e.getMessage());
+        }
+    }
+
+    public void returnEmergencyVehicle() {
+        try {
+            if (Configuration.instance.isDebug) {
+
+                Method methodGetVersion = clazz.getDeclaredMethod("getVersion");
+                String version = (String)methodGetVersion.invoke(instance);
+
+                Method methodListMethods = port.getClass().getMethod("listMethods");
+                methodListMethods.invoke(port);
+            }
+
+            Class[] parameterTypes = {};
+            Method methodScan = port.getClass().getMethod("returnToBase");
+
+            if (Configuration.instance.isDebug) {
+                //System.out.println(medicalEvent.getLocation().getClass());
+                System.out.println(methodScan);
+            }
+
+            Object[] parameterValues = {};
+            String returnVehicleMessage = (String) methodScan.invoke(port,parameterValues);
+
+            System.out.println(returnVehicleMessage);
 
         } catch (Exception e) {
             System.out.println("! exception : " + e.getMessage());

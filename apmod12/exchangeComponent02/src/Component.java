@@ -19,7 +19,7 @@ public class Component {
     }
 
     public String getVersion() {
-        return "Type 1";
+        return "Type 2";
     }
 
     public class Port implements IComponent {

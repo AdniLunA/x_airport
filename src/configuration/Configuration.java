@@ -5,7 +5,7 @@ import com.google.common.eventbus.EventBus;
 public enum Configuration {
     instance;
 
-    public boolean isDebug = true;
+    public boolean isDebug = false;
 
     public String userDirectory = System.getProperty("user.dir");
     public String fileSeparator = System.getProperty("file.separator");
