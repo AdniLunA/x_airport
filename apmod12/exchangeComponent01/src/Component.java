@@ -1,8 +1,12 @@
 import java.lang.reflect.Method;
 
-import base.Item;
+
+
 
 public class Component {
+
+
+
     private static Component instance = new Component();
     public Port port;
 
@@ -15,7 +19,7 @@ public class Component {
     }
 
     public String getVersion() {
-        return "Component 1.00 - gun";
+        return "Type 1";
     }
 
     public class Port implements IComponent {
@@ -25,8 +29,11 @@ public class Component {
             System.out.println(getVersion() + "\n");
         }
 
-        public boolean scan(Item item) {
-            return innerMethod(item);
+        public String launchVehicle(String location) {
+            return innerLaunchVehicle(location);
+        }
+        public String returnToBase () {
+            return innerReturnToBase();
         }
 
         public void listMethods() {
@@ -38,8 +45,14 @@ public class Component {
         }
     }
 
-    private boolean innerMethod(Item item) {
-        System.out.println("Component.innerMethod(" + item + ")");
-        return true;
+    private String innerLaunchVehicle(String location) {
+
+        return "Vehicle " + getVersion() + " is lauchning to " + location +".";
     }
+    private String innerReturnToBase(){
+
+        return "Vehicle " + getVersion() + " is returning to Medical Department.";
+    }
+
+
 }

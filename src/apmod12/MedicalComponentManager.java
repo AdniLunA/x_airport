@@ -1,9 +1,7 @@
 package apmod12;
 
-import base.Subscriber;
-import com.google.common.eventbus.Subscribe;
+
 import configuration.Configuration;
-import event.EventGunDetected;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -16,7 +14,7 @@ import java.net.URLClassLoader;
  * by the Component Manager
  */
 
-public class MedicalComponentManager extends Subscriber {
+public class MedicalComponentManager {
     private Class clazz;
     private Object instance;
     private Object port;
@@ -72,12 +70,11 @@ public class MedicalComponentManager extends Subscriber {
         }
     }
 
-    @Subscribe
-    public void receive(MedicalEvent medicalEvent) {
+    public void launchEmergencyVehicle(String location) {
         try {
             if (Configuration.instance.isDebug) {
-                System.out.println("MedicalComponentManager.receive()");
-                System.out.println("medicalEmergencyEvent : " + medicalEvent);
+                System.out.println("MedicalComponentManager.launchEmergencyVehicle()");
+                System.out.println("medicalEmergency at : " + location);
 
                 Method methodGetVersion = clazz.getDeclaredMethod("getVersion");
                 System.out.println(methodGetVersion);
@@ -91,18 +88,18 @@ public class MedicalComponentManager extends Subscriber {
                 methodListMethods.invoke(port);
             }
 
-            Class[] parameterTypes = {base.Item.class};
+            Class[] parameterTypes = {String.class};
             Method methodScan = port.getClass().getMethod("scan",parameterTypes);
 
             if (Configuration.instance.isDebug) {
-                System.out.println(medicalEvent.getItem().getClass());
+                //System.out.println(medicalEvent.getLocation().getClass());
                 System.out.println(methodScan);
             }
 
-            Object[] parameterValues = {medicalEvent.getItem()};
-            boolean isDetected = (boolean)methodScan.invoke(port,parameterValues);
-            if (isDetected)
-                Configuration.instance.eventBus.post(new EventGunDetected(medicalEvent.getItem()));
+            Object[] parameterValues = {location};
+            String launchVehicleMessage = (String) methodScan.invoke(port,parameterValues);
+
+            System.out.println(launchVehicleMessage);
 
         } catch (Exception e) {
             System.out.println("! exception : " + e.getMessage());
