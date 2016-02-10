@@ -15,5 +15,11 @@ public enum Configuration {
     public String apMod00ComponentName = "Component.jar";
     public String apMod00ComponentJavaArchivePath = userDirectory + fileSeparator + apMod00ComponentPackage + fileSeparator + "exchangeComponent" + apMod00ComponentType + fileSeparator + apMod00ComponentName;
 
+    public String apMod12ComponentPackage = "apmod12";
+    public String apMod12ComponentType = "01";
+    public String apMod12ComponentName = "Component.jar";
+    public String apMod12ComponentJavaArchivePath = userDirectory + fileSeparator + apMod12ComponentPackage + fileSeparator + "exchangeComponent" + apMod12ComponentType + fileSeparator + apMod12ComponentName;
+
+
     public EventBus eventBus = new EventBus("Airport");
 }

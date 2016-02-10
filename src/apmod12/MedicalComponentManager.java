@@ -1,23 +1,27 @@
-package apmod00;
+package apmod12;
+
+import base.Subscriber;
+import com.google.common.eventbus.Subscribe;
+import configuration.Configuration;
+import event.EventGunDetected;
 
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import com.google.common.eventbus.Subscribe;
+/**
+ * When Medical Event is triggered, one of the 3 existing
+ * EmergencyVehicles is sent to the location of the emergency
+ * by the Component Manager
+ */
 
-import base.Subscriber;
-import configuration.Configuration;
-import event.EventGunDetected;
-import event.EventScan;
-
-public class ComponentManager extends Subscriber {
+public class MedicalComponentManager extends Subscriber {
     private Class clazz;
     private Object instance;
     private Object port;
 
-    public ComponentManager() {
+    public MedicalComponentManager() {
         if (Configuration.instance.isDebug)
             System.out.println("--- MedicalComponentManager");
 
@@ -39,7 +43,7 @@ public class ComponentManager extends Subscriber {
 
         try {
             URL[] urls = {new File(Configuration.instance.apMod12ComponentJavaArchivePath).toURI().toURL()};
-            URLClassLoader urlClassLoader = new URLClassLoader(urls,ComponentManager.class.getClassLoader());
+            URLClassLoader urlClassLoader = new URLClassLoader(urls, MedicalComponentManager.class.getClassLoader());
             clazz = Class.forName("Component",true,urlClassLoader);
             if (Configuration.instance.isDebug)
                 System.out.println("clazz : " + clazz.toString() + " - " + clazz.hashCode());
@@ -69,11 +73,11 @@ public class ComponentManager extends Subscriber {
     }
 
     @Subscribe
-    public void receive(EventScan eventScan) {
+    public void receive(MedicalEvent medicalEvent) {
         try {
             if (Configuration.instance.isDebug) {
                 System.out.println("MedicalComponentManager.receive()");
-                System.out.println("eventScan : " + eventScan);
+                System.out.println("medicalEmergencyEvent : " + medicalEvent);
 
                 Method methodGetVersion = clazz.getDeclaredMethod("getVersion");
                 System.out.println(methodGetVersion);
@@ -91,14 +95,14 @@ public class ComponentManager extends Subscriber {
             Method methodScan = port.getClass().getMethod("scan",parameterTypes);
 
             if (Configuration.instance.isDebug) {
-                System.out.println(eventScan.getItem().getClass());
+                System.out.println(medicalEvent.getItem().getClass());
                 System.out.println(methodScan);
             }
 
-            Object[] parameterValues = {eventScan.getItem()};
+            Object[] parameterValues = {medicalEvent.getItem()};
             boolean isDetected = (boolean)methodScan.invoke(port,parameterValues);
             if (isDetected)
-                Configuration.instance.eventBus.post(new EventGunDetected(eventScan.getItem()));
+                Configuration.instance.eventBus.post(new EventGunDetected(medicalEvent.getItem()));
 
         } catch (Exception e) {
             System.out.println("! exception : " + e.getMessage());
